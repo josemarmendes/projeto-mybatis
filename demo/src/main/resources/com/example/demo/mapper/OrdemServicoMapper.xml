@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.mapper.OrdemServicoMapper">
+
+    <resultMap id="ordemServicoRM" type="com.example.demo.model.OrdemServico">
+        <id column="id" property="id"/>
+        <result column="descricao" property="descricao"/>
+        <result column="preco" property="preco"/>
+
+        <association property="cliente" resultMap="com.example.demo.mapper.ClienteMapper.clienteRM"/>
+    </resultMap>
+
+    <insert id="salvarOrdemServico" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+        insert into ordem_servico (descricao, preco, cliente_id) values (#{descricao}, #{preco}, #{cliente.id})
+
+    </insert>
+
+    <select id="findAll" resultMap="ordemServicoRM">
+
+        select os.id as id,
+        os.descricao,
+        os.preco,
+        c.id as cliente_id,
+        c.nome,
+        c.email,
+        c.telefone
+        from ordem_servico os
+        inner join cliente c
+        on os.cliente_id = c.id;
+
+    </select>
+
+    <select id="findByCliente" resultMap="ordemServicoRM">
+        select
+            os.id as id,
+            os.descricao,
+            os.preco,
+            c.id as cliente_id,
+            c.nome,
+            c.email,
+            c.telefone
+        from ordem_servico os
+        inner join cliente c
+            on os.cliente_id = c.id
+        where cliente_id = #{cliente.id}
+
+    </select>
+
+
+</mapper>
